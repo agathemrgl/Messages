@@ -41,6 +41,33 @@ body,
 	padding: 0.25em 0.5em 0.5em;
 }
 
+.Source {
+	position: fixed;
+	right: 2rem;
+	bottom: 2rem;
+	z-index: 2;
+	width: 3rem;
+	height: 3rem;
+	border: 1px solid currentColor;
+	border-radius: 50%;
+	color: #fff;
+	display: grid;
+	place-items: center;
+	font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+	font-size: 1.5rem;
+	line-height: 1;
+	text-decoration: none;
+	mix-blend-mode: difference;
+	cursor: pointer;
+}
+
+.Source:hover,
+.Source:focus-visible {
+	background-color: #fff;
+	color: #000;
+	outline: none;
+}
+
 .Of {
 	width: 100%;
 	height: 100%;

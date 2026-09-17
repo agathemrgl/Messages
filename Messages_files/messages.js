@@ -2089,24 +2089,18 @@ const p = (e) => {
     "white",
     "yellow",
   ],
-  titles = [
-    "SOUS LE \"PLURALISME\", LA BANALISATION DE L'EXTRÊME DROITE",
-    "RÉCESSION, CHÔMAGE, INFLATION : LE POINT SUR L'ÉCONOMIE ET L'EMPLOI",
-    "CHÔMEURS : LA CHAIR À CANON DES PATRONS ET DE L'ÉTAT",
-    "MON PÈRE, MACRON ET MOI",
-    "FRANCE INTER : UNE RENTRÉE QUI SENT LE SAPIN",
-  ];
-let titleIndex = -1;
-let lastRenderedTitle = "";
+  videos = blastVideos;
+let videoIndex = -1;
+let lastRenderedVideo = null;
 const
   s = () => u(f),
-  nextTitle = () => {
+  nextVideo = () => {
     let nextIndex;
     do {
-      nextIndex = Math.floor(Math.random() * titles.length);
-    } while (nextIndex === titleIndex && titles.length > 1);
-    titleIndex = nextIndex;
-    return titles[titleIndex];
+      nextIndex = Math.floor(Math.random() * videos.length);
+    } while (nextIndex === videoIndex && videos.length > 1);
+    videoIndex = nextIndex;
+    return videos[videoIndex];
   },
   y = (e) => e.replace(/>\s+</g, "><").trim(),
   d = (e) => {
@@ -2215,16 +2209,20 @@ const
           }));
       }, 0);
   },
-  j = ({ html: e, caption: t }) => {
-    if (t === lastRenderedTitle) t = nextTitle();
-    lastRenderedTitle = t;
+  j = ({ html: e, video: t }) => {
+    if (t === lastRenderedVideo) t = nextVideo();
+    lastRenderedVideo = t;
     v.root &&
       ((v.root.innerHTML = `
     ${e}
 
     <div id="Caption" class="Caption" style="display: none;">
-      ${t}
+      ${t.title}
     </div>
+
+    <a class="Source" href="${t.url}" target="_blank" rel="noopener" aria-label="Ouvrir la vidéo de Blast">
+      <span aria-hidden="true">↗</span>
+    </a>
 
     <button id="Next" class="Next" onclick="play()"></button>
   `),
@@ -2246,8 +2244,8 @@ const
       }
     })(); // Render single frame
     if (sequence !== x.sequence) return;
-    let n = nextTitle();
-    j({ html: o, caption: n });
+    let n = nextVideo();
+    j({ html: o, video: n });
   };
 (window.addEventListener("resize", S), // @ts-ignore
   (window.play = A),
