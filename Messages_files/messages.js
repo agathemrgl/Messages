@@ -2221,8 +2221,12 @@ const
     </div>
 
     <a class="Source" href="${t.url}" target="_blank" rel="noopener" aria-label="Ouvrir la vidéo de Blast">
-      <span aria-hidden="true">↗</span>
+      <img src="Messages_files/arrow.png" alt="">
     </a>
+
+    <button class="Share" type="button" onclick="shareCurrent()" aria-label="Partager la vidéo de Blast">
+      <img src="Messages_files/share.png" alt="">
+    </button>
 
     <button id="Next" class="Next" onclick="play()"></button>
   `),
@@ -2247,6 +2251,102 @@ const
     let n = nextVideo();
     j({ html: o, video: n });
   };
+const createStoryImage = () => {
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d");
+  const width = 1080;
+  const height = 1920;
+  const scaleX = width / window.innerWidth;
+  const scaleY = height / window.innerHeight;
+
+  canvas.width = width;
+  canvas.height = height;
+  context.fillStyle = "#fff";
+  context.fillRect(0, 0, width, height);
+
+  document.querySelectorAll("#Root [style*='background-color']").forEach((element) => {
+    const bounds = element.getBoundingClientRect();
+    context.fillStyle = getComputedStyle(element).backgroundColor;
+    context.fillRect(
+      bounds.left * scaleX,
+      bounds.top * scaleY,
+      bounds.width * scaleX,
+      bounds.height * scaleY,
+    );
+  });
+
+  context.globalCompositeOperation = "difference";
+  context.fillStyle = "#fff";
+  context.textAlign = "center";
+  context.textBaseline = "middle";
+  context.font = "700 88px Helvetica Neue, Helvetica, Arial, sans-serif";
+
+  const words = lastRenderedVideo.title.split(" ");
+  const lines = [];
+  let line = "";
+  const maxWidth = width - 120;
+  words.forEach((word) => {
+    const candidate = line ? `${line} ${word}` : word;
+    if (context.measureText(candidate).width > maxWidth && line) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = candidate;
+    }
+  });
+  if (line) lines.push(line);
+
+  const lineHeight = 100;
+  const startY = height / 2 - ((lines.length - 1) * lineHeight) / 2;
+  lines.forEach((text, index) => {
+    context.fillText(text, width / 2, startY + index * lineHeight);
+  });
+  context.globalCompositeOperation = "source-over";
+  return canvas;
+};
+
+window.shareCurrent = async () => {
+  if (!lastRenderedVideo) return;
+  const canvas = createStoryImage();
+  const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+  if (!blob) return;
+
+  const file = new File([blob], "messages-story.png", { type: "image/png" });
+  const shareData = {
+    files: [file],
+    title: lastRenderedVideo.title,
+    text: lastRenderedVideo.title,
+    url: lastRenderedVideo.url,
+  };
+
+  if (navigator.canShare?.({ files: [file] }) && navigator.share) {
+    try {
+      await navigator.share(shareData);
+    } catch (error) {
+      if (error.name !== "AbortError") console.error(error);
+    }
+    return;
+  }
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: lastRenderedVideo.title,
+        text: lastRenderedVideo.title,
+        url: lastRenderedVideo.url,
+      });
+    } catch (error) {
+      if (error.name !== "AbortError") console.error(error);
+    }
+    return;
+  }
+
+  const download = document.createElement("a");
+  download.href = URL.createObjectURL(blob);
+  download.download = "messages-story.png";
+  download.click();
+  URL.revokeObjectURL(download.href);
+};
 (window.addEventListener("resize", S), // @ts-ignore
   (window.play = A),
   window.addEventListener("keydown", (e) => {

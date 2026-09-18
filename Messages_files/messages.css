@@ -62,11 +62,47 @@ body,
 	cursor: pointer;
 }
 
+.Share {
+	position: fixed;
+	right: 7.5rem;
+	bottom: 2rem;
+	z-index: 2;
+	width: 4rem;
+	height: 4rem;
+	border: 1px solid currentColor;
+	border-radius: 50%;
+	background: transparent;
+	color: #fff;
+	display: grid;
+	place-items: center;
+	padding: 0;
+	mix-blend-mode: difference;
+	cursor: pointer;
+}
+
+.Source img,
+.Share img {
+	display: block;
+	width: 65%;
+	height: 65%;
+	object-fit: contain;
+	filter: invert(1);
+}
+
 .Source:hover,
-.Source:focus-visible {
+.Source:focus-visible,
+.Share:hover,
+.Share:focus-visible {
 	background-color: #fff;
 	color: #000;
 	outline: none;
+}
+
+.Source:hover img,
+.Source:focus-visible img,
+.Share:hover img,
+.Share:focus-visible img {
+	filter: none;
 }
 
 .Of {
