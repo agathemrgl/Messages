@@ -2322,7 +2322,7 @@ window.shareCurrent = async () => {
     url: lastRenderedVideo.url,
   };
 
-  if (navigator.canShare?.({ files: [file] }) && navigator.share) {
+  if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
     try {
       await navigator.share(shareData);
     } catch (error) {
@@ -2344,10 +2344,7 @@ window.shareCurrent = async () => {
     return;
   }
 
-  const download = document.createElement("a");
-  download.href = dataUrl;
-  download.download = "messages-story.png";
-  download.click();
+  console.warn("Le partage système n'est pas disponible dans ce navigateur.");
 };
 (window.addEventListener("resize", S), // @ts-ignore
   (window.play = A),
