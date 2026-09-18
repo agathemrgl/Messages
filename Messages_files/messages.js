@@ -2308,10 +2308,13 @@ const createStoryImage = () => {
 window.shareCurrent = async () => {
   if (!lastRenderedVideo) return;
   const canvas = createStoryImage();
-  const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
-  if (!blob) return;
-
-  const file = new File([blob], "messages-story.png", { type: "image/png" });
+  const dataUrl = canvas.toDataURL("image/png");
+  const bytes = atob(dataUrl.split(",")[1]);
+  const data = new Uint8Array(bytes.length);
+  for (let index = 0; index < bytes.length; index += 1) {
+    data[index] = bytes.charCodeAt(index);
+  }
+  const file = new File([data], "messages-story.png", { type: "image/png" });
   const shareData = {
     files: [file],
     title: lastRenderedVideo.title,
@@ -2342,10 +2345,9 @@ window.shareCurrent = async () => {
   }
 
   const download = document.createElement("a");
-  download.href = URL.createObjectURL(blob);
+  download.href = dataUrl;
   download.download = "messages-story.png";
   download.click();
-  URL.revokeObjectURL(download.href);
 };
 (window.addEventListener("resize", S), // @ts-ignore
   (window.play = A),
