@@ -2217,7 +2217,8 @@ const
     ${e}
 
     <div id="Caption" class="Caption" style="display: none;">
-      ${t.title}
+      <span class="CaptionSource">BLAST · YOUTUBE</span>
+      <span class="textFitted">${t.title}</span>
     </div>
 
     <a class="Source" href="${t.url}" target="_blank" rel="noopener" aria-label="Ouvrir la vidéo de Blast">
@@ -2227,6 +2228,12 @@ const
     <button class="Share" type="button" onclick="shareCurrent()" aria-label="Partager la vidéo de Blast">
       <img src="Messages_files/share.png" alt="">
     </button>
+
+    <div class="ShareMenu" role="menu" hidden>
+      <button type="button" onclick="openStoryImage()">Ouvrir</button>
+      <button type="button" onclick="downloadStoryImage()">Télécharger</button>
+      <button type="button" onclick="copyVideoLink()">Copier</button>
+    </div>
 
     <button id="Next" class="Next" onclick="play()"></button>
   `),
@@ -2279,7 +2286,7 @@ const createStoryImage = () => {
   context.fillStyle = "#fff";
   context.textAlign = "center";
   context.textBaseline = "middle";
-  context.font = "700 88px Helvetica Neue, Helvetica, Arial, sans-serif";
+  context.font = '700 88px "Amiamie", sans-serif';
 
   const words = lastRenderedVideo.title.split(" ");
   const lines = [];
@@ -2305,8 +2312,37 @@ const createStoryImage = () => {
   return canvas;
 };
 
+const getStoryDataUrl = () => createStoryImage().toDataURL("image/png");
+
+window.toggleShareMenu = () => {
+  const menu = document.querySelector(".ShareMenu");
+  if (menu) menu.hidden = !menu.hidden;
+};
+
+window.openStoryImage = () => {
+  const imageWindow = window.open();
+  if (imageWindow) imageWindow.location.href = getStoryDataUrl();
+};
+
+window.downloadStoryImage = () => {
+  const download = document.createElement("a");
+  download.href = getStoryDataUrl();
+  download.download = "messages-story.png";
+  download.click();
+};
+
+window.copyVideoLink = async () => {
+  if (lastRenderedVideo && navigator.clipboard) {
+    await navigator.clipboard.writeText(lastRenderedVideo.url);
+  }
+};
+
 window.shareCurrent = async () => {
   if (!lastRenderedVideo) return;
+  if (!navigator.share) {
+    window.toggleShareMenu();
+    return;
+  }
   const canvas = createStoryImage();
   const dataUrl = canvas.toDataURL("image/png");
   const bytes = atob(dataUrl.split(",")[1]);
@@ -2344,7 +2380,6 @@ window.shareCurrent = async () => {
     return;
   }
 
-  console.warn("Le partage système n'est pas disponible dans ce navigateur.");
 };
 (window.addEventListener("resize", S), // @ts-ignore
   (window.play = A),

@@ -1,8 +1,15 @@
+@font-face {
+	font-family: "Amiamie";
+	src: url("Amiamie-Typeface-main/webfonts/Amiamie-Regular.woff") format("woff");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
 *,
 ::after,
 ::before {
 	box-sizing: border-box;
-	cursor: none;
 }
 
 html,
@@ -10,6 +17,7 @@ body,
 #Root {
 	height: 100%;
 	margin: 0;
+	font-family: "Amiamie", sans-serif;
 }
 
 .Next {
@@ -30,11 +38,25 @@ body,
 	user-select: none;
 	justify-content: center;
 	align-items: center;
-	font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+	flex-direction: column;
+	font-family: "Amiamie", sans-serif;
 	line-height: 1;
 	display: flex;
 	position: fixed;
 	inset: 0;
+}
+
+.CaptionSource {
+	position: fixed;
+	top: 20px;
+	left: 0;
+	width: 100%;
+	display: block;
+	font-size: 12px;
+	line-height: 1;
+	margin: 0;
+	padding: 0 !important;
+	text-align: center;
 }
 
 .Caption > span {
@@ -54,7 +76,7 @@ body,
 	display: grid;
 	place-items: center;
 	padding: 0;
-	font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+	font-family: "Amiamie", sans-serif;
 	font-size: 2rem;
 	line-height: 1;
 	text-decoration: none;
@@ -103,6 +125,49 @@ body,
 .Share:hover img,
 .Share:focus-visible img {
 	filter: none;
+}
+
+.ShareMenu {
+	position: fixed;
+	right: 12.5rem;
+	bottom: 2.8rem;
+	z-index: 3;
+	width: auto;
+	padding: 0.25rem;
+	border: 1px solid #fff;
+	background: #000;
+	color: #fff;
+	display: flex;
+	gap: 0.15rem;
+	mix-blend-mode: difference;
+}
+
+.ShareMenu[hidden] {
+	display: none;
+}
+
+.ShareMenu button,
+.ShareMenu a {
+	border: 0;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	font-size: 0.75rem;
+	line-height: 1.1;
+	padding: 0.45rem 0.5rem;
+	text-align: left;
+	text-decoration: none;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.ShareMenu button:hover,
+.ShareMenu button:focus-visible,
+.ShareMenu a:hover,
+.ShareMenu a:focus-visible {
+	background: #fff;
+	color: #000;
+	outline: none;
 }
 
 .Of {
