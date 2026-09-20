@@ -1,0 +1,98 @@
+const splannArticles = [
+  {
+    title: 'LE DIOCÈSE DE VANNES AU DÉFI D’UN « CATHOLICISME INTRANSIGEANT »',
+    url: 'https://splann.org/enqu%C3%AAte/diocese-vannes/',
+    source: 'SPLANN !',
+    medium: 'SITE INTERNET',
+  },
+  {
+    title: 'STADES BRETONS : LE PÉRIL HOOLIGAN',
+    url: 'https://splann.org/enqu%C3%AAte/stades-bretons-hooligan/',
+    source: 'SPLANN !',
+    medium: 'SITE INTERNET',
+  },
+  {
+    title: 'LA PÊCHE BRETONNE NAVIGUE À VUE',
+    url: 'https://splann.org/enqu%C3%AAte/peche/',
+    source: 'SPLANN !',
+    medium: 'SITE INTERNET',
+  },
+  {
+    title: 'LYCÉES AGRICOLES BRETONS : LE PRIVÉ CREUSE SON SILLON',
+    url: 'https://splann.org/enqu%C3%AAte/lycees-agricoles/',
+    source: 'SPLANN !',
+    medium: 'SITE INTERNET',
+  },
+  {
+    title: 'HÔPITAL PUBLIC : UNE DESTRUCTION PROGRAMMÉE, UN MARCHÉ POUR LE PRIVÉ',
+    url: 'https://splann.org/enqu%C3%AAte/hopital/',
+    source: 'SPLANN !',
+    medium: 'SITE INTERNET',
+  },
+  {
+    title: 'LITTORAL BRETON : LA TENTATION DU BÉTON',
+    url: 'https://splann.org/enqu%C3%AAte/littoral/',
+    source: 'SPLANN !',
+    medium: 'SITE INTERNET',
+  },
+  {
+    title: 'INTOXICATION MINIÈRE EN BRETAGNE',
+    url: 'https://splann.org/enqu%C3%AAte/mines/',
+    source: 'SPLANN !',
+    medium: 'SITE INTERNET',
+  },
+  {
+    title: 'SAINT-NAZAIRE, MALADE DE SES INDUSTRIES',
+    url: 'https://splann.org/enqu%C3%AAte/pollution-saint-nazaire/',
+    source: 'SPLANN !',
+    medium: 'SITE INTERNET',
+  },
+  {
+    title: "BOCAGE : LA FIN D'UN PAYSAGE",
+    url: 'https://splann.org/enqu%C3%AAte/bocage/',
+    source: 'SPLANN !',
+    medium: 'SITE INTERNET',
+  },
+  {
+    title: 'COOPERL : ENQUÊTE SUR UN GÉANT DU PORC',
+    url: 'https://splann.org/enqu%C3%AAte/cooperl/',
+    source: 'SPLANN !',
+    medium: 'SITE INTERNET',
+  },
+  {
+    title: "À L'OMBRE DES SAFER, LA GUERRE DES CHAMPS",
+    url: 'https://splann.org/enqu%C3%AAte/foncier-agricole/',
+    source: 'SPLANN !',
+    medium: 'SITE INTERNET',
+  },
+  {
+    title: 'IMPLANTS CONTRACEPTIFS ESSURE : UN LONG SILENCE EMPOISONNÉ',
+    url: 'https://splann.org/enqu%C3%AAte/essure/',
+    source: 'SPLANN !',
+    medium: 'SITE INTERNET',
+  },
+  {
+    title: 'EN BRETAGNE, LA MÉTHANISATION SOUS PRESSION',
+    url: 'https://splann.org/enqu%C3%AAte/methanisation/',
+    source: 'SPLANN !',
+    medium: 'SITE INTERNET',
+  },
+  {
+    title: 'LES TRAVERS DU PORC',
+    url: 'https://splann.org/enqu%C3%AAte/lobby-porcin/',
+    source: 'SPLANN !',
+    medium: 'SITE INTERNET',
+  },
+  {
+    title: 'IBERDROLA. QUAND L’ÉNERGIE « PROPRE » A LES MAINS SALES',
+    url: 'https://splann.org/enqu%C3%AAte/iberdrola/',
+    source: 'SPLANN !',
+    medium: 'SITE INTERNET',
+  },
+  {
+    title: "BRETAGNE : BOL D'AIR À L'AMMONIAC",
+    url: 'https://splann.org/enqu%C3%AAte/ammoniac/',
+    source: 'SPLANN !',
+    medium: 'SITE INTERNET',
+  },
+];

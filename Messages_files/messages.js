@@ -2089,7 +2089,14 @@ const p = (e) => {
     "white",
     "yellow",
   ],
-  videos = blastVideos;
+  videos = [
+    ...blastVideos.map((video) => ({
+      ...video,
+      source: "BLAST",
+      medium: "YOUTUBE",
+    })),
+    ...splannArticles,
+  ];
 let videoIndex = -1;
 let lastRenderedVideo = null;
 const
@@ -2217,15 +2224,15 @@ const
     ${e}
 
     <div id="Caption" class="Caption" style="display: none;">
-      <span class="CaptionSource">BLAST · YOUTUBE</span>
+      <span class="CaptionSource">${t.source} · ${t.medium}</span>
       <span class="textFitted">${t.title}</span>
     </div>
 
-    <a class="Source" href="${t.url}" target="_blank" rel="noopener" aria-label="Ouvrir la vidéo de Blast">
+    <a class="Source" href="${t.url}" target="_blank" rel="noopener" aria-label="Ouvrir la publication">
       <img src="Messages_files/arrow.png" alt="">
     </a>
 
-    <button class="Share" type="button" onclick="shareCurrent()" aria-label="Partager la vidéo de Blast">
+    <button class="Share" type="button" onclick="shareCurrent()" aria-label="Partager la publication">
       <img src="Messages_files/share.png" alt="">
     </button>
 
@@ -2258,61 +2265,95 @@ const
     let n = nextVideo();
     j({ html: o, video: n });
   };
-const createStoryImage = () => {
-  const canvas = document.createElement("canvas");
-  const context = canvas.getContext("2d");
-  const width = 1080;
-  const height = 1920;
-  const scaleX = width / window.innerWidth;
-  const scaleY = height / window.innerHeight;
+const createStoryImage = async () => {
+  await document.fonts.ready;
+  const storyRoot = document.querySelector("#Root").cloneNode(true);
+  const caption = storyRoot.querySelector("#Caption");
+  const source = storyRoot.querySelector(".CaptionSource");
+  const title = storyRoot.querySelector(".textFitted");
 
-  canvas.width = width;
-  canvas.height = height;
-  context.fillStyle = "#fff";
-  context.fillRect(0, 0, width, height);
+  storyRoot.style.position = "fixed";
+  storyRoot.style.left = "0";
+  storyRoot.style.top = "0";
+  storyRoot.style.width = "1080px";
+  storyRoot.style.height = "1920px";
+  storyRoot.style.overflow = "hidden";
+  storyRoot.style.backgroundColor = "transparent";
+  storyRoot.style.zIndex = "-1";
+  storyRoot.style.pointerEvents = "none";
+  document.body.appendChild(storyRoot);
 
-  document.querySelectorAll("#Root [style*='background-color']").forEach((element) => {
-    const bounds = element.getBoundingClientRect();
-    context.fillStyle = getComputedStyle(element).backgroundColor;
-    context.fillRect(
-      bounds.left * scaleX,
-      bounds.top * scaleY,
-      bounds.width * scaleX,
-      bounds.height * scaleY,
-    );
+  caption.style.position = "absolute";
+  caption.style.inset = "0";
+  caption.style.color = "#fff";
+  caption.style.mixBlendMode = "difference";
+  caption.style.visibility = "hidden";
+  source.style.position = "absolute";
+  source.style.top = "140px";
+  source.style.fontSize = "28px";
+  source.style.lineHeight = "1";
+  source.style.mixBlendMode = "difference";
+  title.style.display = "inline-block";
+  title.style.maxWidth = "960px";
+  title.style.whiteSpace = "normal";
+  title.style.fontSize = "160px";
+  title.style.lineHeight = "1";
+  while (
+    (title.scrollWidth > 960 || title.scrollHeight > 1000) &&
+    parseFloat(title.style.fontSize) > 40
+  ) {
+    title.style.fontSize = `${parseFloat(title.style.fontSize) - 2}px`;
+  }
+  storyRoot.querySelectorAll(".Next, .Source, .Share, .ShareMenu").forEach((element) => {
+    element.remove();
   });
 
+  const canvas = await html2canvas(storyRoot, {
+    backgroundColor: null,
+    width: 1080,
+    height: 1920,
+    windowWidth: 1080,
+    windowHeight: 1920,
+    scale: 1,
+  });
+  storyRoot.remove();
+
+  const context = canvas.getContext("2d");
   context.globalCompositeOperation = "difference";
   context.fillStyle = "#fff";
   context.textAlign = "center";
   context.textBaseline = "middle";
-  context.font = '700 88px "Amiamie", sans-serif';
+  context.font = '28px "Amiamie", sans-serif';
+  context.fillText(
+    `${lastRenderedVideo.source} · ${lastRenderedVideo.medium}`,
+    540,
+    140,
+  );
 
+  context.font = '160px "Amiamie", sans-serif';
   const words = lastRenderedVideo.title.split(" ");
   const lines = [];
   let line = "";
-  const maxWidth = width - 120;
-  words.forEach((word) => {
+  for (const word of words) {
     const candidate = line ? `${line} ${word}` : word;
-    if (context.measureText(candidate).width > maxWidth && line) {
+    if (context.measureText(candidate).width > 960 && line) {
       lines.push(line);
       line = word;
     } else {
       line = candidate;
     }
-  });
+  }
   if (line) lines.push(line);
-
-  const lineHeight = 100;
-  const startY = height / 2 - ((lines.length - 1) * lineHeight) / 2;
+  const lineHeight = 160;
+  const startY = 960 - ((lines.length - 1) * lineHeight) / 2;
   lines.forEach((text, index) => {
-    context.fillText(text, width / 2, startY + index * lineHeight);
+    context.fillText(text, 540, startY + index * lineHeight);
   });
   context.globalCompositeOperation = "source-over";
   return canvas;
 };
 
-const getStoryDataUrl = () => createStoryImage().toDataURL("image/png");
+const getStoryDataUrl = async () => (await createStoryImage()).toDataURL("image/png");
 
 window.toggleShareMenu = () => {
   const menu = document.querySelector(".ShareMenu");
@@ -2320,21 +2361,44 @@ window.toggleShareMenu = () => {
 };
 
 window.openStoryImage = () => {
-  const imageWindow = window.open();
-  if (imageWindow) imageWindow.location.href = getStoryDataUrl();
+  createStoryImage().then((canvas) => {
+    const imageWindow = window.open();
+    if (imageWindow) imageWindow.location.href = canvas.toDataURL("image/png");
+  });
 };
 
-window.downloadStoryImage = () => {
+window.downloadStoryImage = async () => {
   const download = document.createElement("a");
-  download.href = getStoryDataUrl();
+  download.href = await getStoryDataUrl();
   download.download = "messages-story.png";
   download.click();
 };
 
 window.copyVideoLink = async () => {
-  if (lastRenderedVideo && navigator.clipboard) {
-    await navigator.clipboard.writeText(lastRenderedVideo.url);
+  if (!lastRenderedVideo || !navigator.clipboard) return;
+
+  const blob = await new Promise((resolve) =>
+    (async () => (await createStoryImage()).toBlob(resolve, "image/png"))(),
+  );
+  if (!blob) return;
+
+  if (window.ClipboardItem && navigator.clipboard.write) {
+    try {
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          "image/png": blob,
+          "text/plain": new Blob([lastRenderedVideo.url], {
+            type: "text/plain",
+          }),
+        }),
+      ]);
+      return;
+    } catch (error) {
+      console.warn("Copie de l'image impossible, copie du lien uniquement.", error);
+    }
   }
+
+  await navigator.clipboard.writeText(lastRenderedVideo.url);
 };
 
 window.shareCurrent = async () => {
@@ -2343,7 +2407,7 @@ window.shareCurrent = async () => {
     window.toggleShareMenu();
     return;
   }
-  const canvas = createStoryImage();
+  const canvas = await createStoryImage();
   const dataUrl = canvas.toDataURL("image/png");
   const bytes = atob(dataUrl.split(",")[1]);
   const data = new Uint8Array(bytes.length);
