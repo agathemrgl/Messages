@@ -2330,21 +2330,30 @@ const createStoryImage = async () => {
     140,
   );
 
-  context.font = '160px "Amiamie", sans-serif';
   const words = lastRenderedVideo.title.split(" ");
-  const lines = [];
-  let line = "";
-  for (const word of words) {
-    const candidate = line ? `${line} ${word}` : word;
-    if (context.measureText(candidate).width > 960 && line) {
-      lines.push(line);
-      line = word;
-    } else {
-      line = candidate;
+  let fontSize = 160;
+  let lines;
+  do {
+    context.font = `${fontSize}px "Amiamie", sans-serif`;
+    lines = [];
+    let line = "";
+    for (const word of words) {
+      const candidate = line ? `${line} ${word}` : word;
+      if (context.measureText(candidate).width > 960 && line) {
+        lines.push(line);
+        line = word;
+      } else {
+        line = candidate;
+      }
     }
-  }
-  if (line) lines.push(line);
-  const lineHeight = 160;
+    if (line) lines.push(line);
+    fontSize -= 2;
+  } while (
+    lines.some((line) => context.measureText(line).width > 960) &&
+    fontSize >= 40
+  );
+  context.font = `${Math.max(fontSize + 2, 40)}px "Amiamie", sans-serif`;
+  const lineHeight = Math.max(fontSize + 2, 40);
   const startY = 960 - ((lines.length - 1) * lineHeight) / 2;
   lines.forEach((text, index) => {
     context.fillText(text, 540, startY + index * lineHeight);
